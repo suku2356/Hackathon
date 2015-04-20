@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Search</h2>
+<style type="text/css">
+    .container {
+        margin: 20px 0 0 20px;
+        display: inline-table;
+    }
+
+    .image_container {
+        float: left;
+        margin-right: 10px;
+    }
+</style>
+
+<div>
+    <input id="search_input" class="form-control" type="text" placeholder="Search" />
+    <button type="button" class="btn btn-primary" id="btnSearch">Go</button>
+</div>
+
+<div id="search_results">
+
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+
+        $(function () {
+            $('#btnSearch').on('click', function (e) {
+
+                e.preventDefault();
+                var content = '';
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/List/Search',
+                    data: { key: $('#search_input').val() },
+                    success: function (data) {
+                        $(data.videos).each(function () {
+                            content += '<div class="container">';
+                            content += '<div class="image_container"><img src="' + this.Thumbnail + '"/></div>';
+                            content += '<div><label class="title">Title: ' + this.Title + '</label><br/>';
+                            content += '<label>Desription: ' + this.Description + '</label></div>';
+                            content += '</div>';
+                        });
+                    },
+                    complete: function () {
+                        $('#search_results').html(content);
+                    }
+                });
+            });
+        });
+    </script>
+}
